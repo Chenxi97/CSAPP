@@ -1,0 +1,7 @@
+//判断是否为小端法
+int is_little_endian(void)
+{
+	int n=1;
+	unsigned char * p=(unsigned char *)&n;
+	return p[0];
+}
