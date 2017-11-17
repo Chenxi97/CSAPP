@@ -1,0 +1,7 @@
+//替换某一个字节
+unsigned replace_byte(unsigned x,int i,unsigned char b)
+{
+	unsigned bias=(0xff)<<(i<<3);
+	unsigned re=b<<(i<<3);
+	return x&~bias|re;
+}
