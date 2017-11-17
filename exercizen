@@ -1,4 +1,0 @@
-int consistant(int x,int y)
-{
-	return (x&bias)|(y&~bias);
-}
