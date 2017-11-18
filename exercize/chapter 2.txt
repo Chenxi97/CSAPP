@@ -1,0 +1,542 @@
+﻿//练习题2.58
+
+//判断是否为小端法
+int is_little_endian(void)
+{
+	int n=1;
+	unsigned char * p=(unsigned char *)&n;
+
+	return p[0];
+}
+
+//练习题2.59
+
+int consistant(int x,int y)
+{
+	return (x&bias)|(y&~bias);
+}
+
+//练习题2.60
+
+//替换某一个字节
+unsigned replace_byte(unsigned x,int i,unsigned char b)
+{
+	unsigned bias=(0xff)<<(i<<3);
+	unsigned re=b<<(i<<3);
+	return x&~bias|re;
+}
+
+//练习题2.61
+
+int judgeA(int i)	//全为1
+{
+	return !~i;
+}
+
+int judgeB(int i)	//全为0
+{
+	return !i;
+}
+
+int judgeC(int i)	//最低位为1
+{
+	return judgeA(i|~0xff);
+}
+
+int judgeD(int i)	//最高位为0
+{
+	int n=(sizeof(int)-1)<<3;
+	return !(i&(0xff<<n));
+}
+
+//练习题2.62
+//判断是否为算术右移
+
+int is_arithmetic(void)
+{
+	int n=-1;
+
+	return !(n^(n>>1));
+}
+
+//练习题2.63
+
+unsigned sr1(unsigned x,int k)
+{
+	//perform shift arithmetically
+	unsigned xsra=(int)x>>k;
+	int n=-1<<(8*sizeof(int)-k);
+	return xsra&~n;
+}
+
+int sra(int x ,int k)
+{
+	//perform shift logically
+	int xsr1=(unsigned)x>>k;
+	int m=-1<<(8*sizeof(int)-k);
+	if(x>=0)	//最高位为0
+		return xsr1;
+	else
+		return xsr1|m;
+}
+
+//练习题2.64
+
+int any_odd_one(unsigned x)
+{
+	int n=0x55555555;
+	return !(n^(x&n));
+}
+
+//练习题2.65
+
+int odd_one(unsigned x)	
+{
+	x^=x>>16;//分成两部分，相同置0，不同置1
+	x^=x>>8;
+	x^=x>>4;
+	x^=x>>2;
+	x^=x>>1;
+	x&=0x1;//最后为奇数时最低位为1
+	return x;
+}
+
+//练习题2.66
+//generate mask indicating leftmost 1 in x
+
+int leftmost_one(unsigned x)
+{
+	x|=x>>1;
+	x|=x>>2;
+	x|=x>>4;
+	x|=x>>8;
+	x|=x>>16;	//转换成000...111...
+	return x^(x>>1);
+}
+
+//练习题2.67
+
+A.k<=w-1
+B.int int_size_is_32(void)
+{
+	int set_msb =1<<31;
+	int beyond_msb=set_msb<<1;
+	return set_msb&&!beyond_msb;
+}
+
+C.int int_size_is_32(void)
+{
+	int set_msb=1<<15<<15<<1;
+	int beyond_msb=set_msb<<1;
+	return set_msb&&!beyond_msb;
+}
+
+//练习题2.68
+
+int lower_one_mask(int n)
+{
+	return ~(-1<<(n-1)<<1);//n可以等于32
+}
+
+//练习题2.69
+
+unsigned rotate_left(unsigned x,int n)
+{
+	int w=sizeof(int)<<3;
+	unsigned temp=x>>(w-1-n)>>1;//n可以=0
+	return x<<n|temp;
+}
+
+//练习题2.70
+
+int fits_bits(int x,int n)
+{
+	x>>=n-1;
+	return !(x >> 1) || !~x;//全为零||全为一
+}
+
+//练习题2.71
+
+int xbyte(unsigned word,int bytenum)
+{
+	int size=sizeof(unsigned);
+	int left=(size-bytenum-1)<<3;//确定首位符号
+	int right=(size-1)<<3;
+	int n=(int)word<<left>>right;
+}
+
+//练习题2.72
+
+A.overflow
+B.
+void copy_int(int val, void* buf, int maxbytes) {
+  /* compare two signed number, avoid someone set maxbytes a negetive value */
+  if (maxbytes >= (int) sizeof(val)) {
+    memcpy(buf, (void*)&val, sizeof(val));
+  }
+}
+
+//练习题2.73
+
+int saturating_add(int x,int y)
+{
+	int min=INT_MIN;
+	int sum=x+y;
+	/* 正溢出：x>=0,y>=0,sum<0 */
+	int pos_over=!(x&min)&&!(y&min)&&(sum&min);
+	/* 负溢出：x<0,y<0,sum>=0 */
+	int neg_over=(x&min)&&(y&min)&&!(sum&min);
+	/* 用逻辑运算代替条件运算 */
+	(pos_over&&(sum=INT_MAX))||(neg_over&&(sum=INT_MIN));
+	return sum;
+}
+
+//练习题2.74
+
+int tsub_ok(int x,int y)
+{
+	int sub=x-y;
+	if(y==INT_MIN)	//-INT_MIN会溢出
+		return 0;	if(x>0&&y<0&&sub<0)
+		return 0;
+	else if(x<0&&y>0&&sub>=0)
+		return 0;
+	else
+		return 1;
+}
+
+//练习题2.75
+
+unsigned unsigned_high_prod(unsigned x,unsigned y)
+{
+	int w=sizeof(unsigned)<<3;
+	int t=signed_high_prod(x,y);
+	int xhign=x>>(w-1);
+	int yhign=y>>(w-1);
+	unsigned mul=t+xhign*y+yhign*x;	//根据公式2.18转换
+	return mul;
+}
+
+//利用long long计算高w位
+
+int signed_high_prod(int x,int y)
+{
+	long long mul=(long long)x*y;
+	int w=sizeof(int)<<3;
+	return mul>>w;
+}
+
+//练习题2.76
+
+void *calloc2(size_t nmemb,size_t size)
+{
+	void *p;
+
+	if(nmemb==0||size==0)
+		return NULL;
+	size_t bufsize=nmemb*size;2//检查是否溢出
+	if(nmemb==bufsize/size)
+	{
+		p=malloc(bufsize);
+		memset(p,0,bufsize);
+		return p;
+	}
+	return NULL;
+}
+
+//练习题2.77
+
+A.(x<<4)+x
+B.x-(x<<3)
+C.(x<<6)-(x<<2)
+D.(x<<4)-(x<<7)
+
+//练习题2.78
+
+int divide_power2(int x,int k)
+{
+	int bias=(1<<k)-1;
+	int is_neg=x&INT_MIN;
+	(is_neg&&(x+=bias));//判断为负数后加上bias
+	return x>>k;
+}
+
+//练习题2.79
+
+int mul3div4(int x)
+{
+	return ((x<<1)+x)>>2;
+}
+
+//练习题2.80
+
+int threefourths(int x)
+{
+	int x30=x>>2;	//前30位先除以四，后乘三
+	int bthan4=(x30<<1)+x30;
+	int x2=x&3;		//后2位先乘三，后除以四
+	int sthan4=(x2<<1)+x2;
+	int is_neg=x&INT_MIN;
+	int bias=(1<<2)-1;
+	(is_neg&&(sthan4+=bias));
+	sthan4>>=2;
+	return bthan4+sthan4;
+}
+
+//练习题2.81
+
+A.-1<<k
+B.(~(-1<<k))<<j
+
+//练习题2.82
+
+A.false 
+Think INT_MIN<1,and -INT_MIN<-1;
+B.true
+C.true
+D.true
+E.true
+
+//练习题2.83
+
+A.
+b=0.yyyyy...;
+=>b<<k=y.yyyy...=Y+0.yyyy...=Y+b;
+=>b=Y/(1<<k-1)
+B.
+(a).5/7
+(b).2/5
+(c).19/63
+
+//练习题2.84
+
+/*三种情形：
+ *1.sx=1，sy=0;
+ *2.sx=sy=0,ux<=uy
+ *3.sx=sy=1,ux>=uy
+ */
+return (sx>sy)||(sx==sy&&(sx?ux>=uy:ux<=uy));
+
+//练习题2.85
+//这道题不想做QAQ
+//答案来自于www.gitbook.com/book/dreamanddead/csapp-3e-solutions/details
+bias=2<<(k-1)-1
+
+A.E=2,M=0b1.11,f=0b0.11,v=7.0
+位模式：0 10...01 110...
+
+B.
+Assume bias >> n
+bigest odd number, M must be 0b1.111111...., f = 0b0.11111111...(n bits 1)
+E = n, V = 0b11111111...(n+1 bits 1) = 2^(n+1) - 1
+bits
+0 bias+n 11111....
+
+C.
+least standard number
+M must be 0b1.00...., f = 0b0.000...., E = 1 - bias
+V = 2^(1-bias)
+reciprocal
+V = 2^(bias-1)
+M = 0b1.0000..., f = 0b0.000...., E = bias-1, e = bias + E
+bits
+2.85
+600 11...101 00000.....
+
+//练习题2.86
+
+bias=2^14-1
+0 0...0 0 0...01	2^(1-bias-63)
+0 0...1 1 0...00	2^(1-bias)
+0 1...0 1 1...11	2^(2^15-2-bias)*(2-2^-63)
+
+//练习题2.87
+
+描述			hex	M		E	V		D
+-0			0x8000	0		-14	-0		-0.0
+>2的最小值		0x4001	1025/1024	1	1025*2^-9	2.001953
+512			0x6000	1		9	512		512.0
+最大的非规格化值	0x03ff	1023/1024	-14	1023*2^-24	0.000061
+负无穷			0xfc00
+0x3BB0			0x3BB0	123/64		-1	123/128		0.960938
+
+//练习题2.88
+
+A 位 		A 值		B 位 		B 值
+1 01110 001 	-9/16 		1 0110 0010	 -9/16
+0 10110 101 	13*2^4 		0 1110 1010 	13*2^4
+1 00111 110 	-7/2^10 	1 0000 0111 	-7/2^10
+0 00000 101 	5/2^11 		0 0000 0001 	1/2^10
+1 11011 000 	-2^12 		1 1110 1111	 -31*2^3
+0 11000 100 	3*2^8 		0 1111 0000 	+oo
+
+//练习题2.89	**
+
+A.true
+B.false
+y=INT_MIN
+C.true
+D.true
+E.false
+dx==0||dy==0
+
+
+//练习题2.90
+
+float fpwr2(int x)
+{
+	unsigned exp,frac;
+	unsigned u;
+
+	if(x<-149){
+		exp=0;
+		frac=0;
+	}else if(x<-126){
+		exp=0;
+		frac=1<<(unsigned)(x+126+23);
+	}else if(x<255-127){		//E=e-bias;
+		exp=x;
+		frac=0;
+	}else{
+		exp=0xff;
+		frac=0;
+	}
+
+	u=exp<<23|frac;
+	return u2f(u);
+}
+
+//练习题2.91
+
+A.0b11.0010010000111111011011
+B.0b11.(001)...
+C.第9位
+
+//练习题2.92
+
+float_bits float_negate(float_bits f)
+{
+	unsigned sign=f>>31;
+	unsigned exp=f>>23&0xff;
+	unsigned frac=f&0x7fffff;
+	if(exp==0xff&&frac!=0)
+		return f;
+	return ((~sign)<<31)|(exp<<23)|frac;
+}
+
+
+//练习题2.93
+
+float_bits float_absval(float_bits f)
+{
+	unsigned sign=0;	//符号位置零
+	unsigned exp=f>>23&0xff;
+	unsigned frac=f&0x7fffff;
+	if(exp==0xff&&frac!=0)
+		return f;
+	return (sign<<31)|(exp<<23)|frac;
+}
+
+//练习题2.94
+
+float_bits float_twice(float_bits f)
+{
+	unsigned sign=f>>31;
+	unsigned exp=f>>23&0xff;
+	unsigned frac=f&0x7fffff;
+	if(exp==0xff&&frac!=0)
+		return f;
+	if(exp==0)//非规格化数
+	{	
+		if((frac&0x400000)==1)
+			exp=1;
+		frac<<=1;
+	}
+	else if(exp<254)//规格化数不溢出
+		exp+=1;
+	else		//规格化数溢出
+	{
+		exp=0xff;
+		frac=0;
+	}
+	return (sign<<31)|(exp<<23)|frac;
+}
+
+
+//练习题2.95
+
+float_bits float_half(float_bits f)
+{
+	unsigned sign=f>>31;
+	unsigned exp=f>>23&0xff;
+	unsigned frac=f&0x7fffff;
+	unsigned round=frac&0x3;
+	if(exp==0xff&&frac!=0)
+		return f;
+	if(exp==0)//非规格化数
+	{		
+		frac>>=1;
+		//向偶数舍入(sound to even)，只有最后两位是11时，才会进一位
+		if(round==0x3)
+			frac+=1;
+	}
+	else if(exp==1)
+	{
+		exp--;
+		frac=(frac>>1)+0x400000;
+		if(round==0x3)
+			frac+=1;
+	}
+	else		
+		exp--;
+	return (sign<<31)|(exp<<23)|frac;
+}
+
+//练习题2.96
+
+int float_f2i(float_bits f)
+{
+	unsigned sign=f>>31;
+	unsigned exp=f>>23&0xff;
+	unsigned frac=f&0x7fffff;
+	unsigned round=frac&0x3;
+	unsigned bias=0x7f;
+	int n,E,M;
+	if(exp==0xff&&frac!=0)
+		return f;
+	if(exp<0+bias)//小于1的值舍入为0
+		n=0;
+	else if(exp<31+bias)//1<=f<2^31
+	{
+		E=exp-bias;
+		M=frac+0x800000;
+		n=E>23?M<<(E-23):M>>(23-E);
+	}
+	else//f>2^31
+		n=0x80000000;
+	return sign?-n:n;
+}
+
+//练习题2.97
+
+float_bits float_i2f(int i)
+{
+	int e,t,frac,round,E=0,bias=127;
+	int sign=i>>31;
+	float_bits n;
+
+	if(i==INT_MIN)
+		return 0xcf000000;//返回INT_MIN
+	if(i==0)
+		return 0;//0返回0
+	if(sign)
+		i=~i+1;//转为正数
+	for(t=i;t>1;t>>=1,E++);
+	e=(E+127)<<23;
+	frac=i<<(32-E);
+	round=(frac&0x300)>>8;//如果大于23位，则提取23,24位
+	frac=(frac>>9)&0x7fffff;	
+	sign<<=31;//加入符号位
+	n=sign|e|frac;
+	return round==0x3?n+1:n;//23、24位为0x3时，小数位进一
+}
