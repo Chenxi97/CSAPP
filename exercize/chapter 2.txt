@@ -414,16 +414,12 @@ C.第9位
 
 //练习题2.92
 
-float_bits float_negate(float_bits f)
-{
-	unsigned sign=f>>31;
-	unsigned exp=f>>23&0xff;
-	unsigned frac=f&0x7fffff;
-	if(exp==0xff&&frac!=0)
-		return f;
-	return ((~sign)<<31)|(exp<<23)|frac;
+float_bits float_neg(float_bits uf) {
+	unsigned sign=uf>>31;
+	unsigned t=uf&0x7fffffff;
+	if(t>0x7f800000) return uf;
+	return (~sign<<31)|t;
 }
-
 
 //练习题2.93
 
@@ -476,7 +472,7 @@ float_bits float_half(float_bits f)
 	if(exp==0)//非规格化数
 	{		
 		frac>>=1;
-		//向偶数舍入(sound to even)，只有最后两位是11时，才会进一位
+		/* 向偶数舍入(sound to even)，只有最后两位是11时，才会进一位 */
 		if(round==0x3)
 			frac+=1;
 	}
@@ -519,24 +515,25 @@ int float_f2i(float_bits f)
 
 //练习题2.97
 
-float_bits float_i2f(int i)
-{
-	int e,t,frac,round,E=0,bias=127;
-	int sign=i>>31;
-	float_bits n;
+float_bits float_i2f(int x) {
+	unsigned i,frac,round;
+	unsigned inc=0,E=0,bias=127,sign=0,temp=x;
 
-	if(i==INT_MIN)
-		return 0xcf000000;//返回INT_MIN
-	if(i==0)
-		return 0;//0返回0
-	if(sign)
-		i=~i+1;//转为正数
-	for(t=i;t>1;t>>=1,E++);
-	e=(E+127)<<23;
-	frac=i<<(32-E);
-	round=(frac&0x300)>>8;//如果大于23位，则提取23,24位
-	frac=(frac>>9)&0x7fffff;	
-	sign<<=31;//加入符号位
-	n=sign|e|frac;
-	return round==0x3?n+1:n;//23、24位为0x3时，小数位进一
+	/* special case */
+	if(x==0)
+		return 0;
+	/* normalized numbers transformed to positive values*/
+	if(x<0)
+	{
+		temp=-x;
+		sign=0x80000000;
+	}
+	/* calculate the exponent */
+	for(i=temp;i>1;i>>=1,E+=1);
+	frac=temp<<(32-E);
+	/* calculate the 23rd-32nd bits to round */
+	round=frac&0x3ff;
+	if(round>=0x300||(round<0x200&&round>0x100))
+		inc=1;
+	return sign|((((E+bias)<<23)|((frac>>9)&0x7fffff))+inc);
 }
