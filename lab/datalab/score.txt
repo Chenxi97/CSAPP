@@ -1,0 +1,19 @@
+Correctness Results	Perf Results
+Points	Rating	Errors	Points	Ops	Puzzle
+1	1	0	2	4	bitAnd
+2	2	0	2	3	getByte
+3	3	0	2	6	logicalShift
+4	4	0	2	36	bitCount
+4	4	0	2	6	bang
+1	1	0	2	1	tmin
+2	2	0	2	6	fitsBits
+2	2	0	2	7	divpwr2
+2	2	0	2	2	negate
+3	3	0	2	4	isPositive
+3	3	0	2	13	isLessOrEqual
+4	4	0	2	28	ilog2
+2	2	0	2	6	float_neg
+4	4	0	2	21	float_i2f
+4	4	0	2	17	float_twice
+
+Score = 71/71 [41/41 Corr + 30/30 Perf] (160 total operators)
