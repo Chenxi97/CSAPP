@@ -1,10 +1,9 @@
-##bomb-myself -- 我的答案
-##bomb.tar -- 下载的源文件
-##datalab.pdf -- 本实验的指导文档
-##gdbnotes-x86-64.pdf -- gdb简单指令手册
+bomb-myself -- 我的答案
+bomb.tar -- 下载的源文件
+datalab.pdf -- 本实验的指导文档
+gdbnotes-x86-64.pdf -- gdb简单指令手册
 
 结果如下：
-
 Welcome to my fiendish little bomb. You have 6 phases with
 which to blow yourself up. Have a nice day!
 Border relations with Canada have never been better.  
