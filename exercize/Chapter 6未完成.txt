@@ -1,0 +1,162 @@
+//6.22
+
+设磁道位数为a*x*r,磁道数为b*(1-x)*r
+则容量为a*b*(1-x)*x*r^2
+当x=1/2时，容量最大
+
+//6.23
+
+T_avg_seek = 4ms
+T_avg_rotation = 1/2*1/15000*60* 1000= 2ms
+T_avg_transfer = 1/15000*1/800*60 * 1000= 0.005ms
+T_access = 6.005m
+
+//6.24
+
+T_avg_rotation =0.5*1/15000*60*1000=2ms
+A.
+T_access=T_avg_seek+T_avg_rotation+T_max_rotation*4=22ms
+
+B.
+T_access=4000*(T_avg_rotation+T_avg_seek)=24000ms
+
+//6.25
+
+m c B E S t s b
+32 1024 4 4 64 24 6 2
+32 1024 4 256 1 30 0 2
+32 1024 8 1 128 22 7 3
+32 1024 8 128 1 29 0 3
+32 1024 32 1 32 22 5 5
+32 1024 32 4 8 24 3 5
+
+//6.26
+
+m c B E S t s b
+32 2048 8 1 256 21 8 3
+32 2048 4 4 128 23 7 2
+32 1024 2 8 64 25 6 1
+32 1024 32 2 16 23 4 5
+
+//6.27
+
+A.
+0x08A4 - 0x08A7
+0x0704 - 0x0707
+B.
+0x1238 - 0x123B
+
+//6.28
+
+A.
+None
+B.
+0x18F0 - 0x18F3
+0x00B0 - 0x00B3
+C.
+0x0E34 - 0x0E37
+D.
+0x1BDC - 0x1BDF
+
+//6.29
+
+A.
+CT | CT | CT | CT | CT | CT | CT | CT | CI | CI | CO | CO
+B.
+m
+m
+h 0xc0
+
+//6.30
+
+A.
+128byte
+B.
+CT | CT | CT | CT | CT | CT | CT | CT | CI | CI | CI | CO | CO
+ 
+//6.31
+ 
+A.
+00111000 110 10
+B.
+0x2
+0x6
+0x38
+是
+0xEB
+ 
+ //6.32
+ 
+ A.
+ 10110111 010 00
+ B.
+ 0x0
+ 0x2
+ 0xB7
+ 否
+ 
+//6.33
+ 
+0001 0111 1000 10xx
+0001 0110 1100 10xx
+
+0x1788~0x178B
+0x16C8~0x168B
+
+//6.34
+
+dst
+0 m h m m
+1 h m m m
+2 m h m m
+3 h m m m
+src
+0 m m h m
+1 m h m h
+2 m m h m
+3 m h m h
+
+//6.35
+
+dst
+0 m h h h 
+1 m h h h
+2 m h h h
+3 m h h h
+src
+0 m h h h
+1 m h h h
+2 m h h h
+3 m h h h
+
+//6.36
+
+A.
+100%
+B.
+25%
+C.
+不能
+冷不命中
+D.
+能
+如果块大小变成32字节，不命中率会降低到12.5%
+
+//6.37
+
+sumA 25% 25%
+sumB 0% 25%
+sumC 50% 12.5%
+
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
